@@ -15,7 +15,7 @@ class TagController extends Controller
     //CRUD BASICO
     public function index()
     {
-      $tags = Tag::all();
+      $tags = Tag::where('user_id', Auth::user()->id)->get();
       return response()->json(['tags' => $tags]);
     }
 
@@ -24,6 +24,7 @@ class TagController extends Controller
       $newTag = new Tag;
 
       $newTag->name = $request->name;
+      $newTag->user_id = Auth::user()->id;
 
       $newTag->save();
 
@@ -32,7 +33,7 @@ class TagController extends Controller
 
     public function updateTag(Request $request, $id)
     {
-      $updatedTag = Tag::find($id);
+      $updatedTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
 
       $updatedTag->name = $request->name;
 
@@ -43,7 +44,7 @@ class TagController extends Controller
 
     public function deleteTag($id)
     {
-      $deletedTag = Tag::find($id);
+      $deletedTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
       $deletedTag->delete();
       return response()->json(['message' => 'Tag deletada com sucesso']);
     }
@@ -51,7 +52,7 @@ class TagController extends Controller
     //FUNCOES EXTRAS
     public function showIndividualTag($id)
     {
-      $individualTag = Tag::find($id);
+      $individualTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
       //encontra as linhas da tabela pivo(NoteTag) onde a tag escolhida participa
       $relations = NoteTag::where('tag_id', $id)->get();
       $relatedNotes = new Collection;

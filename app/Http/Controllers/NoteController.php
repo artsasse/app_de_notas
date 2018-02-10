@@ -15,7 +15,7 @@ class NoteController extends Controller
     //CRUD BASICO
     public function index()
     {
-      $notes = Note::all();
+      $notes = Note::where('user_id', Auth::user()->id)->get();
       return response()->json(['notes' => $notes]);
     }
 
@@ -25,6 +25,7 @@ class NoteController extends Controller
 
       $newNote->noteTitle = $request->noteTitle;
       $newNote->noteContent = $request->noteContent;
+      $newNote->user_id = Auth::user()->id;
 
       $newNote->save();
 
@@ -33,7 +34,7 @@ class NoteController extends Controller
 
     public function updateNote(Request $request, $id)
     {
-      $updatedNote = Note::find($id);
+      $updatedNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
 
       $updatedNote->noteTitle = $request->noteTitle;
       $updatedNote->noteContent = $request->noteContent;
@@ -45,7 +46,8 @@ class NoteController extends Controller
 
     public function deleteNote($id)
     {
-      $deletedNote = Note::find($id);
+      $deletedNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
+
       $deletedNote->delete();
       return response()->json(['message' => 'Nota deletada com sucesso']);
     }
@@ -53,7 +55,7 @@ class NoteController extends Controller
     //FUNCOES EXTRAS
     public function showIndividualNote($id)
     {
-      $individualNote = Note::find($id);
+      $individualNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
       //encontra as linhas da tabela pivo(NoteTag) onde a nota escolhida participa
       $relations = NoteTag::where('note_id', $id)->get();
       $relatedTags = new Collection;
@@ -70,6 +72,8 @@ class NoteController extends Controller
     //fixa uma tag a uma nota
     public function attachTag(Request $request, $id)
     {
+      Note::where('user_id', Auth::user()->id)->findOrFail($id);
+      Tag::where('user_id', Auth::user()->id)->findOrFail($request->id);
       $newRelation = new NoteTag;
       $newRelation->note_id = $id;
       $newRelation->tag_id = $request->id;
@@ -81,10 +85,17 @@ class NoteController extends Controller
     //Retira uma tag de uma nota q ela marcava
     public function dettachTag(Request $request, $id)
     {
+      Note::where('user_id', Auth::user()->id)->findOrFail($id);
+      Tag::where('user_id', Auth::user()->id)->findOrFail($request->id);
       $relations = NoteTag::where('note_id', $id)->get();
       $deletedRelation = $relations->where('tag_id',$request->id)->first();
       $deletedRelation->delete();
 
       return response()->json(['message'=>'Nota desmarcada com sucesso']);
     }
+
+    /*
+    *eu ainda quero fazer isso de uma maneira q seja possivel associar
+    *e desassociar varias tags de uma vez
+    */
 }

@@ -15,4 +15,9 @@ class Tag extends Model
   {
     return $this->belongsToMany('App\Note', 'note_tags', 'tag_id', 'note_id')->withTimestamps()->using('App\NoteTag');
   }
+
+  public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

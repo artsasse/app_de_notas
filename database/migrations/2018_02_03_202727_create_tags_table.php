@@ -18,6 +18,10 @@ class CreateTagsTable extends Migration
             $table->string('name');
             /*$table->integer('note_id')->unsigned()->nullable();
             $table->foreign('note_id')->references('id')->on('notes')->onDelete('set null');*/
+
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+
             $table->timestamps();
             $table->softDeletes();
         });

@@ -27,6 +27,8 @@ class CreateNotesTable extends Migration
           /*$table->integer('tag_id')->unsigned()->nullable(); #ESTABELECENDO FOREIGN KEY COM AS TAGS
           $table->foreign('tag_id')->references('id')->on('tags')->onDelete('set null');*/
 
+          $table->integer('user_id')->unsigned()->nullable();
+          $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 
           $table->timestamps();
           $table->softDeletes();
