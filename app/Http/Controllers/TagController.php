@@ -15,7 +15,7 @@ class TagController extends Controller
     public function index()
     {
       $tags = Tag::all();
-      return view('tags', ['tags' => $tags]);
+      return response()->json(['tags' => $tags]);
     }
 
     public function addTag(Request $request)
@@ -26,7 +26,7 @@ class TagController extends Controller
 
       $newTag->save();
 
-      return back();
+      return response()->json(['message' => 'Tag criada com sucesso']);
     }
 
     public function updateTag(Request $request, $id)
@@ -37,14 +37,14 @@ class TagController extends Controller
 
       $updatedTag->save();
 
-      return back();
+      return response()->json(['message' => 'Tag editada com sucesso']);
     }
 
     public function deleteTag($id)
     {
       $deletedTag = Tag::find($id);
       $deletedTag->delete();
-      return back();
+      return response()->json(['message' => 'Tag deletada com sucesso']);
     }
 
     //FUNCOES EXTRAS
@@ -56,6 +56,6 @@ class TagController extends Controller
       $notesId = $relation->note_id;
       $relatedNotes = Notes::where('id', $notesId)->get();
 
-      return view('individualTag', ['individualTag' => $individualTag, 'relatedNotes' => $relatedNotes]);
+      return response()->json(['individualTag' => $individualTag, 'relatedNotes' => $relatedNotes]);
     }
 }
