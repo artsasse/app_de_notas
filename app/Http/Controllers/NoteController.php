@@ -54,42 +54,37 @@ class NoteController extends Controller
     public function showIndividualNote($id)
     {
       $individualNote = Note::find($id);
+      //encontra as linhas da tabela pivo(NoteTag) onde a nota escolhida participa
       $relations = NoteTag::where('note_id', $id)->get();
-      $tag_id_list = new Collection;
       $relatedTags = new Collection;
-      //cria lista com ids de tags
-      foreach ($relations as $relation){
-        $tag_id_list->push($relation->tag_id);
-      }
-      //cria lista com as tags associadas a cada ID da lista de IDs das tags
-      foreach($tag_id_list as $tag_id){
-        $relatedTags->push(Tag::where('id',$tag_id)->first());
-      }
-      //AINDA DA PRA MELHORAR ESSE CODIGO
 
+      //a partir das linhas da tabela pivo, agrupamos as tags associadas a nota escolhida
+      foreach ($relations as $relation){
+        $relatedTags->push(Tag::where('id', $relation->tag_id)->first());
+      }
+
+      //envia a instancia da nota escolhida e as instancias das tags associadas
       return response()->json(['individualNote' => $individualNote, 'relatedTags' => $relatedTags]);
     }
 
-    //fixa uma ou mais tags a uma nota
+    //fixa uma tag a uma nota
     public function attachTag(Request $request, $id)
     {
-      foreach($request as $tag){
-        $newRelation = new NoteTag;
-        $newRelation->note_id = $id;
-        $newRelation->tag_id = $tag->id;
-        $newRelation->save();
-      }
+      $newRelation = new NoteTag;
+      $newRelation->note_id = $id;
+      $newRelation->tag_id = $request->id;
+      $newRelation->save();
+
       return response()->json(['message'=>'Nota marcada com sucesso']);
     }
 
-    //Retira uma ou mais tags das notas q elas marcavam
+    //Retira uma tag de uma nota q ela marcava
     public function dettachTag(Request $request, $id)
     {
       $relations = NoteTag::where('note_id', $id)->get();
-      foreach($request as $tag){
-        $deletedRelation = $relations->where('tag_id',$tag->id);
-        $deletedRelation->delete();
-      }
+      $deletedRelation = $relations->where('tag_id',$request->id)->first();
+      $deletedRelation->delete();
+
       return response()->json(['message'=>'Nota desmarcada com sucesso']);
     }
 }

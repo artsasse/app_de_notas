@@ -26,21 +26,28 @@ Route::group([
 });
 
 Route::group(['middleware'=>['api','CheckToken']], function(){
-//Rotas basicas para notas
+//CRUD das notas
 Route::get('notes', 'NoteController@index');
-Route::get('notes/{id}', 'NoteController@showIndividualNote'); //mostra tags associadas tbm
 Route::post('notes/add', 'NoteController@addNote');
 Route::put('notes/update/{id}', 'NoteController@updateNote');
 Route::delete('notes/delete/{id}', 'NoteController@deleteNote');
 
-//Rotas basicas para tags
+//CRUD das tags
 Route::get('tags', 'TagController@index');
-Route::get('tags/{id}', 'TagController@showIndividualTag');
 Route::post('tags/add', 'TagController@addTag');
 Route::put('tags/update/{id}', 'TagController@updateTag');
 Route::delete('tags/delete/{id}', 'TagController@deleteTag');
 
+
+//Rotas com relacionamento entre notas e tags
+Route::get('notes/{id}', 'NoteController@showIndividualNote'); //mostra tags associadas
+Route::get('tags/{id}', 'TagController@showIndividualTag'); //mostra as notas associadas
+
+//TESTANDO
+Route::post('notes/attach/{id}', 'NoteController@attachTag');
+Route::delete('notes/dettach/{id}', 'NoteController@dettachTag');
 //rotas de busca
 //Route::post('notes/search', 'NoteController@searchNote');
 //Route::post('tags/search', 'TagController@searchTag');
+
 });

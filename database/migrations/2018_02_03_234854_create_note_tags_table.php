@@ -15,7 +15,7 @@ class CreateNoteTagsTable extends Migration
     {
         Schema::create('note_tags', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            //$table->timestamps();
             $table->softDeletes();
             $table->integer('note_id')->unsigned()->nullable();
             $table->foreign('note_id')->references('id')->on('notes')->onDelete('set null');

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Tag;
 use App\NoteTag;
 use App\Note;
+use Illuminate\Support\Collection;
 
 class TagController extends Controller
 {
@@ -51,11 +52,16 @@ class TagController extends Controller
     public function showIndividualTag($id)
     {
       $individualTag = Tag::find($id);
-
-      $relation = NoteTag::where('tag_id', $id)->get();
-      $notesId = $relation->note_id;
-      $relatedNotes = Notes::where('id', $notesId)->get();
-
+      //encontra as linhas da tabela pivo(NoteTag) onde a tag escolhida participa
+      $relations = NoteTag::where('tag_id', $id)->get();
+      $relatedNotes = new Collection;
+      //a partir das linhas da tabela pivo, agrupamos as notas associadas a tag escolhida
+      foreach ($relations as $relation){
+        $relatedNotes->push(Note::where('id', $relation->note_id)->first());
+      }
+      //envia a instancia da tag escolhida e as instancias das notas associadas
       return response()->json(['individualTag' => $individualTag, 'relatedNotes' => $relatedNotes]);
+      //(talvez seja melhor enviar apenas a id e o nome das notas para carregar mais rapido)
+      //(mas ai ja eh um problema de escalabilidade, algo pro futuro)
     }
 }

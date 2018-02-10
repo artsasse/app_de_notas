@@ -11,4 +11,5 @@ class NoteTag extends Pivot
     use softDeletes;
     protected $dates = ['deleted_at'];
     protected $guarded = [];
+    public $timestamps = false;
 }
