@@ -44,8 +44,8 @@ Route::get('notes/{id}', 'NoteController@showIndividualNote'); //mostra tags ass
 Route::get('tags/{id}', 'TagController@showIndividualTag'); //mostra as notas associadas
 
 //TESTANDO
-Route::post('notes/attach/{id}', 'NoteController@attachTag');
-Route::delete('notes/dettach/{id}', 'NoteController@dettachTag');
+Route::post('notes/attach/{note_id}/{tag_id}', 'NoteController@attachTag');
+Route::delete('notes/dettach/{note_id}/{tag_id}', 'NoteController@dettachTag');
 //rotas de busca
 //Route::post('notes/search', 'NoteController@searchNote');
 //Route::post('tags/search', 'TagController@searchTag');

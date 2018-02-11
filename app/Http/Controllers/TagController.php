@@ -9,6 +9,7 @@ use App\Tag;
 use App\NoteTag;
 use App\Note;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class TagController extends Controller
 {

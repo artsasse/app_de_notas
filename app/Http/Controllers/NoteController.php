@@ -9,6 +9,7 @@ use App\Note;
 use App\NoteTag;
 use App\Tag;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
@@ -70,25 +71,25 @@ class NoteController extends Controller
     }
 
     //fixa uma tag a uma nota
-    public function attachTag(Request $request, $id)
+    public function attachTag($note_id, $tag_id)
     {
-      Note::where('user_id', Auth::user()->id)->findOrFail($id);
-      Tag::where('user_id', Auth::user()->id)->findOrFail($request->id);
+      Note::where('user_id', Auth::user()->id)->findOrFail($note_id);
+      Tag::where('user_id', Auth::user()->id)->findOrFail($tag_id);
       $newRelation = new NoteTag;
-      $newRelation->note_id = $id;
-      $newRelation->tag_id = $request->id;
+      $newRelation->note_id = $note_id;
+      $newRelation->tag_id = $tag_id;
       $newRelation->save();
 
       return response()->json(['message'=>'Nota marcada com sucesso']);
     }
 
     //Retira uma tag de uma nota q ela marcava
-    public function dettachTag(Request $request, $id)
+    public function dettachTag($note_id, $tag_id)
     {
-      Note::where('user_id', Auth::user()->id)->findOrFail($id);
-      Tag::where('user_id', Auth::user()->id)->findOrFail($request->id);
-      $relations = NoteTag::where('note_id', $id)->get();
-      $deletedRelation = $relations->where('tag_id',$request->id)->first();
+      Note::where('user_id', Auth::user()->id)->findOrFail($note_id);
+      Tag::where('user_id', Auth::user()->id)->findOrFail($tag_id);
+      $relations = NoteTag::where('note_id', $note_id)->get();
+      $deletedRelation = $relations->where('tag_id',$tag_id)->first();
       $deletedRelation->delete();
 
       return response()->json(['message'=>'Nota desmarcada com sucesso']);

@@ -10,6 +10,7 @@ class Note extends Model
   use softDeletes;
   protected $dates = ['deleted_at'];
   protected $guarded = [];
+  protected $hidden = ['deleted_at'];
 
   public function tags()
   {
