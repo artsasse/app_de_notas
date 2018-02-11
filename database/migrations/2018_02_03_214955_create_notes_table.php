@@ -15,7 +15,7 @@ class CreateNotesTable extends Migration
     {
       Schema::create('notes', function (Blueprint $table) {
           $table->increments('id');
-          $table->string('noteTitle')->default('Título');
+          $table->string('noteTitle')->default('Sem Título');
           $table->mediumText('noteContent')->nullable();
           /*
           $table->dateTime('reminder'); #LEMBRETE

@@ -10,6 +10,7 @@ use App\NoteTag;
 use App\Tag;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\EditNote;
 
 class NoteController extends Controller
 {
@@ -20,12 +21,12 @@ class NoteController extends Controller
       return response()->json(['notes' => $notes]);
     }
 
-    public function addNote(Request $request)
+    public function addNote(EditNote $request)
     {
       $newNote = new Note;
 
-      $newNote->noteTitle = $request->noteTitle;
-      $newNote->noteContent = $request->noteContent;
+      $newNote->noteTitle = $request->input('noteTitle');
+      $newNote->noteContent = $request->input('noteContent');
       $newNote->user_id = Auth::user()->id;
 
       $newNote->save();
@@ -33,12 +34,12 @@ class NoteController extends Controller
       return response()->json(['message' => 'Nota criada com sucesso']);
     }
 
-    public function updateNote(Request $request, $id)
+    public function updateNote(EditNote $request, $id)
     {
       $updatedNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
 
-      $updatedNote->noteTitle = $request->noteTitle;
-      $updatedNote->noteContent = $request->noteContent;
+      $updatedNote->noteTitle = $request->input('noteTitle');
+      $updatedNote->noteContent = $request->input('noteContent');
 
       $updatedNote->save();
 

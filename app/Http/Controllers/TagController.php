@@ -10,6 +10,7 @@ use App\NoteTag;
 use App\Note;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\EditTag;
 
 class TagController extends Controller
 {
@@ -20,11 +21,11 @@ class TagController extends Controller
       return response()->json(['tags' => $tags]);
     }
 
-    public function addTag(Request $request)
+    public function addTag(EditTag $request)
     {
       $newTag = new Tag;
 
-      $newTag->name = $request->name;
+      $newTag->name = $request->input('name');
       $newTag->user_id = Auth::user()->id;
 
       $newTag->save();
@@ -32,11 +33,11 @@ class TagController extends Controller
       return response()->json(['message' => 'Tag criada com sucesso']);
     }
 
-    public function updateTag(Request $request, $id)
+    public function updateTag(EditTag $request, $id)
     {
       $updatedTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
 
-      $updatedTag->name = $request->name;
+      $updatedTag->name = $request->input('name');
 
       $updatedTag->save();
 
