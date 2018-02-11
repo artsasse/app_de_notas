@@ -14,10 +14,12 @@ class CheckToken
      * @param  \Closure  $next
      * @return mixed
      */
+
+     //checa o token passado pelo usuario
     public function handle($request, Closure $next)
     {
         if(!$user = JWTAuth::parseToken()->authenticate()){
-          return response()->json(['msg'=>'User not found']);
+          return response()->json(['message'=>'User not found']);
         }
         return $next($request);
     }
