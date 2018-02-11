@@ -15,4 +15,4 @@ Route::get('/', function () {
     return view('welcome'); //default laravel
 });
 
-Auth::routes();
+//Auth::routes();
