@@ -42,12 +42,17 @@ Route::delete('tags/delete/{id}', 'TagController@deleteTag');
 //Rotas com relacionamento entre notas e tags
 Route::get('notes/{id}', 'NoteController@showIndividualNote'); //mostra tags associadas
 Route::get('tags/{id}', 'TagController@showIndividualTag'); //mostra as notas associadas
+Route::post('notes/attach/{note_id}/{tag_id}', 'NoteController@attachTag'); //associa uma tag a uma nota
+Route::delete('notes/dettach/{note_id}/{tag_id}', 'NoteController@dettachTag'); //desassocia uma tag de uma nota
 
-//TESTANDO
-Route::post('notes/attach/{note_id}/{tag_id}', 'NoteController@attachTag');
-Route::delete('notes/dettach/{note_id}/{tag_id}', 'NoteController@dettachTag');
 //rotas de busca
 //Route::post('notes/search', 'NoteController@searchNote');
 //Route::post('tags/search', 'TagController@searchTag');
+
+//feedback do usuario
+Route::post('/contact', 'ContactController@sendEmail');
+
+//trocar senha(usuario já logado)
+Route::post('password', 'AuthController@changePassword');
 
 });

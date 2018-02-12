@@ -9,6 +9,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use App\Http\Requests\SignInForm;
 use App\Http\Requests\SignUpForm;
+use Illuminate\Support\Collection;
+use App\Http\Requests\ChangePasswordRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -49,4 +52,34 @@ class AuthController extends Controller
 
     return response()->json(['token' => $token]);
   }
+
+  public function changePassword(ChangePasswordRequest $request)
+  {
+    $credentials = array('email' => Auth::user()->email, 'password' => $request->input('oldPassword'));
+
+    if(!auth()->validate($credentials)){
+      return response()->json(['error' => 'Senha incorreta!']);
+    }
+
+    /*if (!$request->input('newPassword') == $request->input('newPasswordConfirmation')) {
+      return response()->json(['error' => 'Você digitou senhas diferentes']);
+    }*/
+
+    Auth::user()->password = $request->input('newPassword');
+    Auth::user()->save();
+
+    $newToken = auth()->refresh();
+
+    return response()->json(['token' => $newToken, 'message' => 'Senha alterada com sucesso']);
+
+  }
+
+  /*public function forgotPassword(ForgotPasswordRequest $request)
+  {
+    $userEmail = User::where('email', $request->input('email'))->firstOrFail()->email;
+    //send email with 'tokenized' link*/
+
+
+  }
+  //private function reseta senha sem pedir senha anterior
 }
