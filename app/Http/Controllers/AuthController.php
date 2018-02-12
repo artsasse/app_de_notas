@@ -65,7 +65,7 @@ class AuthController extends Controller
       return response()->json(['error' => 'Você digitou senhas diferentes']);
     }*/
 
-    Auth::user()->password = $request->input('newPassword');
+    Auth::user()->password = bcrypt($request->input('newPassword'));
     Auth::user()->save();
 
     $newToken = auth()->refresh();
@@ -80,6 +80,6 @@ class AuthController extends Controller
     //send email with 'tokenized' link*/
 
 
-  }
+
   //private function reseta senha sem pedir senha anterior
 }

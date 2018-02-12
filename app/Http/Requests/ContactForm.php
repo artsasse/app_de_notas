@@ -24,10 +24,10 @@ class ContactForm extends FormRequest
     public function rules()
     {
         return [
-          'subject' => 'required',
-          'message' => 'required',
-          'name' => 'nullable',
-          'email' => 'nullable'
+          'subject' => 'required', //assunto
+          'message' => 'required', //o texto da mensagem
+          'name' => 'nullable', //FRONT!!! nao enviem esse campo no request
+          'email' => 'nullable' //FRONT!!! nao enviem esse campo no request
         ];
     }
 

@@ -48,6 +48,7 @@ class UserMessage extends Notification
                     ->greeting(' ')
                     ->salutation(' ')
                     ->from($this->message->email, $this->message->name)
+                    ->replyTo($this->message->email, $this->message->name)
                     ->line($this->message->message);
     }
 
