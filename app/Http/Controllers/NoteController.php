@@ -41,7 +41,10 @@ class NoteController extends Controller
     public function updateNote(EditNote $request, $id)
     {
       //verifica se a nota requirida pertence ao usuario logado
-      $updatedNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
+      $updatedNote = Note::where('user_id', Auth::user()->id)->find($id);
+      if(!$updatedNote){
+        return response()->json(['error' => 'Não foi possível encontrar a nota']);
+      }
 
       $updatedNote->noteTitle = $request->input('noteTitle');
       $updatedNote->noteContent = $request->input('noteContent');
@@ -55,7 +58,10 @@ class NoteController extends Controller
     public function deleteNote($id)
     {
       //verifica se a nota requirida pertence ao usuario logado
-      $deletedNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
+      $deletedNote = Note::where('user_id', Auth::user()->id)->find($id);
+      if(!$deletedNote){
+        return response()->json(['error' => 'Não foi possível encontrar a nota']);
+      }
 
       $deletedNote->delete();
       return response()->json(['message' => 'Nota deletada com sucesso']);
@@ -67,7 +73,10 @@ class NoteController extends Controller
     public function showIndividualNote($id)
     {
       //verifica se a nota requirida pertence ao usuario logado
-      $individualNote = Note::where('user_id', Auth::user()->id)->findOrFail($id);
+      $individualNote = Note::where('user_id', Auth::user()->id)->find($id);
+      if(!$individualNote){
+        return response()->json(['error' => 'Não foi possível encontrar a nota']);
+      }
 
       //encontra as linhas da tabela pivo(NoteTag) onde a nota escolhida participa
       $relations = NoteTag::where('note_id', $id)->get();
@@ -87,8 +96,14 @@ class NoteController extends Controller
     public function attachTag($note_id, $tag_id)
     {
       //verifica se a nota e a tag pertencem ao usuario logado
-      Note::where('user_id', Auth::user()->id)->findOrFail($note_id);
-      Tag::where('user_id', Auth::user()->id)->findOrFail($tag_id);
+      $note = Note::where('user_id', Auth::user()->id)->find($note_id);
+      if(!$note){
+        return response()->json(['error' => 'Não foi possível encontrar a nota']);
+      }
+      $tag = Tag::where('user_id', Auth::user()->id)->find($tag_id);
+      if(!$tag){
+        return response()->json(['error' => 'Não foi possível encontrar a tag']);
+      }
 
       //cria uma nova linha na tabela pivo com a nota e a tag passadas na URL
       $newRelation = new NoteTag;
@@ -103,12 +118,25 @@ class NoteController extends Controller
     public function dettachTag($note_id, $tag_id)
     {
       //verifica se a nota e a tag pertencem ao usuario logado
-      Note::where('user_id', Auth::user()->id)->findOrFail($note_id);
-      Tag::where('user_id', Auth::user()->id)->findOrFail($tag_id);
+      $note = Note::where('user_id', Auth::user()->id)->find($note_id);
+      if(!$note){
+        return response()->json(['error' => 'Não foi possível encontrar a nota']);
+      }
+
+      $tag = Tag::where('user_id', Auth::user()->id)->find($tag_id);
+      if(!$tag){
+        return response()->json(['error' => 'Não foi possível encontrar a tag']);
+      }
 
       //deleta a linha da tabela pivo com a nota e a tag passadas na URL
       $relations = NoteTag::where('note_id', $note_id)->get();
+      if($relations->isEmpty()){
+        return response()->json(['error' => 'Não foi possível encontrar a nota referida']);
+      }
       $deletedRelation = $relations->where('tag_id',$tag_id)->first();
+      if(!$deletedRelation){
+        return response()->json(['error' => 'Não foi possível encontrar a tag referida']);
+      }
       $deletedRelation->delete();
 
       return response()->json(['message'=>'Nota desmarcada com sucesso']);

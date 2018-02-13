@@ -19,11 +19,6 @@ use App\Http\Requests\ResetPasswordRequest;
 class AuthController extends Controller
 {
   public function signup(SignUpForm $request){
-    /*$this->validate($request, [
-      'name' => 'required',
-      'email' => 'email|required|unique:users',
-      'password'=> 'required'
-    ]);*/
 
     $usuario_novo = new User;
 
@@ -37,10 +32,6 @@ class AuthController extends Controller
   }
 
   public function signin(SignInForm $request){
-    /*$this->validate($request, [
-      'email' => 'email|required',
-      'password'=> 'required'
-    ]);*/
 
     $credentials = $request->only('email', 'password');
 
@@ -65,9 +56,6 @@ class AuthController extends Controller
       return response()->json(['error' => 'Senha incorreta!']);
     }
 
-    /*if (!$request->input('newPassword') == $request->input('newPasswordConfirmation')) {
-      return response()->json(['error' => 'Você digitou senhas diferentes']);
-    } já tratei isso na request*/
 
     //envia apenas uma hash da senha para o BD
     Auth::user()->password = bcrypt($request->input('newPassword'));
@@ -84,7 +72,10 @@ class AuthController extends Controller
   public function forgotPassword(ForgotPasswordRequest $request)
   {
     $email = $request->input('email');
-    $user = User::where('email', $email)->firstOrFail();
+    $user = User::where('email', $email)->first();
+    if(!$user){
+      return response()->json(['error' => 'Não existe nenhuma conta com esse email']);
+    }
 
     //gera uma string aleatoria a partir de duas funcoes do php e associa ao usuario em questao no BD
     $passcode = bin2hex(random_bytes(20));
@@ -99,9 +90,15 @@ class AuthController extends Controller
   //a funcao q realmente reseta a senha no BD
   public function resetForgotPassword(ResetPasswordRequest $request)
   {
-    $user = User::where('email', $request->input('email'))->firstOrFail();
+    $user = User::where('email', $request->input('email'))->first();
+    if (!$user){
+      return response()->json(['error' => 'Não existe nenhuma conta com esse email']);
+    }
     //verifica o passcode do usuario (possivel vulnerabilidade se o usuario conseguir passar um valor nulo)
-    if(!$request->input('passcode') === $user->passcode)
+    if(!$user->passcode){
+      return response()->json(['error' => 'Houve um problema na geração do código para criar sua nova senha. Por favor, tente gerar um novo código.']);
+    }
+    if($request->input('passcode') !== $user->passcode)
     {
       return response()->json(['error' => 'O código está incorreto.']);
     }

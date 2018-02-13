@@ -40,7 +40,10 @@ class TagController extends Controller
     public function updateTag(EditTag $request, $id)
     {
       //verifica se a tag pertence ao usuario logado
-      $updatedTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
+      $updatedTag = Tag::where('user_id', Auth::user()->id)->find($id);
+      if(!$updatedTag){
+        return response()->json(['error' => 'Não foi possível encontrar a tag']);
+      }
 
       $updatedTag->name = $request->input('name');
 
@@ -53,7 +56,10 @@ class TagController extends Controller
     public function deleteTag($id)
     {
       //verifica se a tag pertence ao usuario logado
-      $deletedTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
+      $deletedTag = Tag::where('user_id', Auth::user()->id)->find($id);
+      if(!$deletedTag){
+        return response()->json(['error' => 'Não foi possível encontrar a tag']);
+      }
       $deletedTag->delete();
       return response()->json(['message' => 'Tag deletada com sucesso']);
     }
@@ -64,7 +70,10 @@ class TagController extends Controller
     public function showIndividualTag($id)
     {
       //verifica se a tag pertence ao usuario logado
-      $individualTag = Tag::where('user_id', Auth::user()->id)->findOrFail($id);
+      $individualTag = Tag::where('user_id', Auth::user()->id)->find($id);
+      if(!$individualTag){
+        return response()->json(['error' => 'Não foi possível encontrar a tag']);
+      }
 
       //encontra as linhas da tabela pivo(NoteTag) onde a tag escolhida participa
       $relations = NoteTag::where('tag_id', $id)->get();
@@ -75,7 +84,7 @@ class TagController extends Controller
       foreach ($relations as $relation){
         $relatedNotes->push(Note::where('id', $relation->note_id)->first());
       }
-      
+
       //envia a instancia da tag escolhida e as instancias das notas associadas
       return response()->json(['individualTag' => $individualTag, 'relatedNotes' => $relatedNotes]);
       //(talvez seja melhor enviar apenas a id e o nome das notas para carregar mais rapido)
