@@ -23,6 +23,9 @@ Route::group([
 ], function ($router) {
     Route::post('signup', 'AuthController@signup');
     Route::post('signin', 'AuthController@signin');
+    //esqueceu a senha (usuario nao logado)
+    Route::post('forgot', 'AuthController@forgotPassword'); //TESTANDO
+    Route::post('reset', 'AuthController@resetForgotPassword'); //TESTANDO
 });
 
 Route::group(['middleware'=>['api','CheckToken']], function(){

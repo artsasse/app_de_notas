@@ -11,7 +11,10 @@ use App\Http\Requests\SignInForm;
 use App\Http\Requests\SignUpForm;
 use Illuminate\Support\Collection;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\ForgotPasswordMessage;
+use App\Http\Requests\ResetPasswordRequest;
 
 class AuthController extends Controller
 {
@@ -53,6 +56,7 @@ class AuthController extends Controller
     return response()->json(['token' => $token]);
   }
 
+  //exige apenas a senha antiga do usuario para poder criar uma nova
   public function changePassword(ChangePasswordRequest $request)
   {
     $credentials = array('email' => Auth::user()->email, 'password' => $request->input('oldPassword'));
@@ -63,23 +67,49 @@ class AuthController extends Controller
 
     /*if (!$request->input('newPassword') == $request->input('newPasswordConfirmation')) {
       return response()->json(['error' => 'Você digitou senhas diferentes']);
-    }*/
+    } já tratei isso na request*/
 
+    //envia apenas uma hash da senha para o BD
     Auth::user()->password = bcrypt($request->input('newPassword'));
     Auth::user()->save();
 
+    //invalida token anterior e cria um novo
     $newToken = auth()->refresh();
 
     return response()->json(['token' => $newToken, 'message' => 'Senha alterada com sucesso']);
 
   }
 
-  /*public function forgotPassword(ForgotPasswordRequest $request)
+  //envia email com um codigo para o usuario 'esquecido' criar uma nova senha
+  public function forgotPassword(ForgotPasswordRequest $request)
   {
-    $userEmail = User::where('email', $request->input('email'))->firstOrFail()->email;
-    //send email with 'tokenized' link*/
+    $email = $request->input('email');
+    $user = User::where('email', $email)->firstOrFail();
 
+    //gera uma string aleatoria a partir de duas funcoes do php e associa ao usuario em questao no BD
+    $passcode = bin2hex(random_bytes(20));
+    $user->passcode = $passcode;
+    $user->save();
 
+    //funcao notify envia notificacao para o usuario via email com o 'passcode'
+    $user->notify(new ForgotPasswordMessage($passcode));
+    return response()->json(['message' => 'Enviaremos uma mensagem para o seu email. Isso pode levar alguns minutos.']);
+  }
 
-  //private function reseta senha sem pedir senha anterior
+  //a funcao q realmente reseta a senha no BD
+  public function resetForgotPassword(ResetPasswordRequest $request)
+  {
+    $user = User::where('email', $request->input('email'))->firstOrFail();
+    //verifica o passcode do usuario (possivel vulnerabilidade se o usuario conseguir passar um valor nulo)
+    if(!$request->input('passcode') === $user->passcode)
+    {
+      return response()->json(['error' => 'O código está incorreto.']);
+    }
+    //envia hash da senha pro BD
+    $user->password = bcrypt($request->input('newPassword'));
+    //anula o passcode do usuario, para q nao seja mais possivel resetar sua senha com o msm codigo
+    $user->passcode = null;
+    $user->save();
+    return response()->json(['message' => 'A nova senha foi criada com sucesso']);
+  }
 }
