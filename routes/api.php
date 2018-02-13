@@ -58,4 +58,8 @@ Route::post('/contact', 'ContactController@sendEmail');
 //trocar senha(usuario já logado)
 Route::post('password', 'AuthController@changePassword');
 
+//logout (invalida o token atual do usuario)
+Route::post('signout', 'AuthController@signout');
+
+
 });

@@ -33,6 +33,10 @@ class AuthController extends Controller
 
   public function signin(SignInForm $request){
 
+    if(auth()->user()){
+      auth()->invalidate();
+    }
+
     $credentials = $request->only('email', 'password');
 
     try{
@@ -108,5 +112,10 @@ class AuthController extends Controller
     $user->passcode = null;
     $user->save();
     return response()->json(['message' => 'A nova senha foi criada com sucesso']);
+  }
+
+  public function signout(){
+    auth()->logout();
+    return response()->json(['message' => 'Você saiu da sua conta com sucesso']);
   }
 }
