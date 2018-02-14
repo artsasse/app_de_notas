@@ -1,6 +1,6 @@
 <?php
 
 return [
-  'email' => 'arthurmendonca@ejcm.com.br',
-  'name' => 'Grupo 1',
+  'email' => env('ADMIN_EMAIL'),
+  'name' => env('ADMIN_NAME'),
 ];
