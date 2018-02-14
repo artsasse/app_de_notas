@@ -1,0 +1,51 @@
+<ion-header>
+    <ion-navbar>
+      <ion-title>Registrar</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding id="signup">    
+  <ion-grid>
+    <ion-row>
+      <ion-col center text-center>
+        <h1 class="welcome-text">Simple Text</h1>
+        <img class ="img_central" src="assets/imgs/forms-icon.gif" class="logo"/>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+    <ion-item>
+      <ion-label stacked>Usuário</ion-label>
+      <ion-input type="text" [(ngModel)]="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label stacked>Nome</ion-label>
+      <ion-input type="text" required [(ngModel)]="name"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label stacked>Senha</ion-label>
+        <ion-input type="password" required [(ngModel)]="password1"></ion-input>
+    </ion-item>  
+    <ion-item>
+        <ion-label stacked>Confirme sua Senha</ion-label>
+        <ion-input type="password"  required [(ngModel)]="password2"></ion-input>
+    </ion-item>  
+  </ion-list>    
+  <ion-col center bottom text-center>
+    <button ion-button full color="lightText" (click)="signUp()">Registrar</button>
+  </ion-col>
+</ion-content>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

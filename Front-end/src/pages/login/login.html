@@ -1,0 +1,43 @@
+<ion-header>
+    <ion-navbar>
+      <ion-title>Logar</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding id="login">    
+  <ion-grid>
+    <ion-row>
+      <ion-col center text-center>
+        <h1 class="welcome-text">Simple Text</h1>
+        <img class ="img_central" src="assets/imgs/forms-icon.gif" class="logo"/>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+    <ion-item>
+      <ion-label stacked>Username</ion-label>
+      <ion-input type="text" required [(ngModel)]="username"></ion-input>
+    </ion-item>
+    <ion-item>
+        <ion-label stacked>Password</ion-label>
+        <ion-input type="password" required [(ngModel)]="password"></ion-input>
+    </ion-item>  
+  </ion-list>    
+  <ion-col center bottom text-center>
+    <button ion-button full color="lightText" required (click)="doLogin()">Logar</button>
+  </ion-col>
+</ion-content>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

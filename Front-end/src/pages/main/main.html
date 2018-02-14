@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-navbar color="color1">
+    <ion-buttons start>
+      <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    </ion-buttons>
+
+    <ion-title>Notas</ion-title>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="body" padding text-center class="vertical-align-content" [hidden]="annotations && annotations.length > 0">
+  
+  
+  <ion-grid>
+    <ion-row>
+      <ion-col class="readjust">
+        Clique no + para criar um item.
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-content padding [hidden]="!annotations || annotations.length <= 0">
+  <ion-item-group>
+    <ion-item-group *ngFor="let annotation of annotations" class="annotation">
+      <ion-item>  
+        <ion-label [ngClass]="{stricken:annotation.done}">Título:   {{ annotation.name }}</ion-label>
+        <ion-checkbox color="dark" [(ngModel)]="annotation.done" (click)="updateItemState($event, annotation)"></ion-checkbox>
+      </ion-item>
+      <ion-item>   
+        <ion-label [ngClass]="{stricken:annotation.done}" class ="contentLabel">{{ annotation.content}}</ion-label>
+      </ion-item>
+    </ion-item-group>
+  </ion-item-group>
+</ion-content>
+
+
+<ion-footer>
+
+<ion-fab right bottom>
+  <button ion-fab color="primary" (click)="showInputAlert()"><ion-icon name="add"></ion-icon></button>
+</ion-fab>
+<ion-fab left bottom>
+  <button ion-fab color="primary" (click)="deleteAction()" [disabled]="!canDelete()"><ion-icon name="close"></ion-icon></button>
+</ion-fab>
+<ion-fab center bottom>
+  <button ion-fab color="primary" (click)="showEditAlert()" [disabled]="!canEdit()" ><ion-icon name="md-create"></ion-icon></button>
+</ion-fab>
+
+</ion-footer>

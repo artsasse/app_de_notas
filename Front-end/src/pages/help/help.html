@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar color="color1">
+    <ion-buttons start>
+      <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    </ion-buttons>
+    <ion-title>Help</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <h5>
+    Clique nos botões para obter informações:
+  </h5>
+  <ion-list>
+    <ion-item class="helpItem">
+      <button class="helpButton" ion-fab color="primary" (click)="helpAdd()"><ion-icon name="add"></ion-icon></button>
+    </ion-item>
+    <ion-item class="helpItem">
+      <button class="helpButton" ion-fab color="primary" (click)="helpDelete()"><ion-icon name="close"></ion-icon></button>
+    </ion-item>
+    <ion-item class="helpItem">
+      <button class="helpButton" ion-fab color="primary" (click)="helpEdit()"><ion-icon name="md-create"></ion-icon></button>
+    </ion-item>
+    <ion-item class="helpItem">
+      <ion-checkbox class="helpButton" (click)="helpCheckBox()" ></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
